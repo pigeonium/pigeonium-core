@@ -33,7 +33,7 @@ class Contract:
                 'raise': True
             }
 
-            aeval = Interpreter(minimal=True, config=contract_config)
+            aeval = Interpreter(minimal=True, use_numpy=False, config=contract_config)
 
             aeval.symtable['transaction'] = transaction
             aeval.symtable['selfAddress'] = self.address
