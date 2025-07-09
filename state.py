@@ -170,7 +170,7 @@ class State:
         return False if row is None else True
 
     def setVariable(self, varKey:bytes, varValue:bytes|None):
-        if varKey is None:
+        if varValue is None:
             self.cursor.execute("DELETE FROM variable WHERE address=%s AND varKey=%s", (self.contractAddress, varKey))
         else:
             self.cursor.execute("INSERT INTO variable (address,varKey,varValue) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE varValue=%s",
