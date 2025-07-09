@@ -169,7 +169,7 @@ class State:
         row = self.cursor.fetchone()
         return False if row is None else True
 
-    def setVariable(self, varKey:bytes, varValue:bytes):
+    def setVariable(self, varKey:bytes, varValue:bytes|None):
         if varKey is None:
             self.cursor.execute("DELETE FROM variable WHERE address=%s AND varKey=%s", (self.contractAddress, varKey))
         else:
