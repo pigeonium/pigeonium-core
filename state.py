@@ -170,8 +170,14 @@ class State:
         return False if row is None else True
 
     def setVariable(self, varKey:bytes, varValue:bytes):
-        self.cursor.execute("INSERT INTO variable (address,varKey,varValue) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE varValue=%s",
-                            (self.contractAddress, varKey, varValue, varValue))
+        if varKey is None:
+            self.cursor.execute("DELETE FROM variable WHERE address=%s AND varKey=%s", (self.contractAddress, varKey))
+        else:
+            self.cursor.execute("INSERT INTO variable (address,varKey,varValue) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE varValue=%s",
+                                (self.contractAddress, varKey, varValue, varValue))
+    
+    def delVariable(self, varKey:bytes):
+        self.cursor.execute("DELETE FROM variable WHERE address=%s AND varKey=%s", (self.contractAddress, varKey))
     
     def transferFromUser(self, dest:bytes, currencyId:bytes, amount:int):
         bal = self.getBalance(self.userAddress, currencyId)
