@@ -6,6 +6,7 @@ from .struct import Transaction
 from .wallet import Wallet
 from time import time
 from typing import Optional, Literal
+from string import ascii_letters, digits
 
 class State:
     def __init__(self, userAddress:bytes, contractAddress:bytes, connection:MySQLConnection = Config.MySQLConnection):
@@ -332,8 +333,14 @@ class State:
         self.cursor.execute("INSERT INTO contract (address,script) VALUES (%s,%s)", (self.contractAddress, script))
 
     def createCurrency(self, name:str, symbol:str, supply:int) -> "Transaction":
-        if self.getSelfCurrency():
-            raise InvalidCurrency()
+        if self.getSelfCurrency(): raise InvalidCurrency("Address already issuing currency")
+        if (len(name) < 2) or (len(name) > 24) or (False in [name_letter in (ascii_letters+digits+"_") for name_letter in name]):
+            raise InvalidCurrency("Name: 2-24 characters, a-z,A-Z,0-9,_")
+        if (len(symbol) < 2) or (len(symbol) > 8) or (False in [symbol_letter in (ascii_letters+digits) for symbol_letter in symbol]):
+            raise InvalidCurrency("Symbol: 2-8 characters, a-z,A-Z,0-9")
+        if not symbol[0] in ascii_letters:
+            raise InvalidCurrency("First character of the symbol must be a-z,A-Z")
+
         cu = Currency.create(name,symbol,self.contractAddress,supply)
         tx = Transaction()
         tx.indexId = self.nextIndexId()
