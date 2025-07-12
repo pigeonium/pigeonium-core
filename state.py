@@ -47,8 +47,17 @@ class State:
             balances[row['currencyId']] = int(row['amount'])
         return balances
 
-    def getCurrency(self, currencyId:bytes):
-        self.cursor.execute("SELECT * FROM currency WHERE currencyId=%s", (currencyId,))
+    def getCurrency(self, currencyId:Optional[bytes]=None, name:Optional[str]=None, symbol:Optional[str]=None, issuer:Optional[bytes]=None):
+        if (None is currencyId is name is symbol is issuer):
+            raise TypeError("getCurrency requires at least one argument")
+        if currencyId:
+            self.cursor.execute("SELECT * FROM currency WHERE currencyId=%s", (currencyId,))
+        elif name:
+            self.cursor.execute("SELECT * FROM currency WHERE name=%s", (name,))
+        elif symbol:
+            self.cursor.execute("SELECT * FROM currency WHERE symbol=%s", (symbol,))
+        elif issuer:
+            self.cursor.execute("SELECT * FROM currency WHERE issuer=%s", (issuer,))
         row = self.cursor.fetchone()
         if not row:
             return None
