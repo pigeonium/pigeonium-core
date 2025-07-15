@@ -105,6 +105,8 @@ class State:
         currencyId: Optional[bytes] = None,
         amount_min: Optional[int] = None,
         amount_max: Optional[int] = None,
+        indexId_start: Optional[int] = None,
+        indexId_end: Optional[int] = None,
         timestamp_start: Optional[int] = None,
         timestamp_end: Optional[int] = None,
         isContract: Optional[bool] = None,
@@ -116,6 +118,12 @@ class State:
         query = "SELECT * FROM transaction"
         conditions = []
         params = []
+
+        if (indexId_start is not None and indexId_end is not None) and (indexId_start > indexId_end):
+            indexId_start, indexId_end = indexId_end, indexId_start
+        
+        if (timestamp_start is not None and timestamp_end is not None) and (timestamp_start > timestamp_end):
+            timestamp_start, timestamp_end = timestamp_end, timestamp_start
 
         if address:
             conditions.append("(source = %s OR dest = %s)")
@@ -135,6 +143,12 @@ class State:
         if amount_max is not None and amount_max >= 0:
             conditions.append("amount <= %s")
             params.append(amount_max)
+        if indexId_start is not None:
+            conditions.append("indexId >= %s")
+            params.append(indexId_start)
+        if indexId_end is not None:
+            conditions.append("indexId <= %s")
+            params.append(indexId_end)
         if timestamp_start is not None:
             conditions.append("timestamp >= %s")
             params.append(timestamp_start)
