@@ -144,10 +144,10 @@ class State:
             conditions.append("indexId <= %s")
             params.append(indexId_end)
         if timestamp_start is not None:
-            conditions.append(f"timestamp {">=" if sort_order == "ASC" else "<="} %s")
+            conditions.append(f"timestamp {'>=' if sort_order == 'ASC' else '<='} %s")
             params.append(timestamp_start)
         if timestamp_end is not None:
-            conditions.append(f"timestamp {"<=" if sort_order == "ASC" else ">="} %s")
+            conditions.append(f"timestamp {'<=' if sort_order == 'ASC' else '>='} %s")
             params.append(timestamp_end)
         if isContract is not None:
             conditions.append("isContract = %s")
