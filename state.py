@@ -138,10 +138,10 @@ class State:
             conditions.append("amount <= %s")
             params.append(amount_max)
         if indexId_start is not None:
-            conditions.append("indexId >= %s")
+            conditions.append(f"indexId {'>=' if sort_order == 'ASC' else '<='} %s")
             params.append(indexId_start)
         if indexId_end is not None:
-            conditions.append("indexId <= %s")
+            conditions.append("indexId {'<=' if sort_order == 'ASC' else '>='} %s")
             params.append(indexId_end)
         if timestamp_start is not None:
             conditions.append(f"timestamp {'>=' if sort_order == 'ASC' else '<='} %s")
