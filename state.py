@@ -119,12 +119,6 @@ class State:
         conditions = []
         params = []
 
-        if (indexId_start is not None and indexId_end is not None) and (indexId_start > indexId_end):
-            indexId_start, indexId_end = indexId_end, indexId_start
-        
-        if (timestamp_start is not None and timestamp_end is not None) and (timestamp_start > timestamp_end):
-            timestamp_start, timestamp_end = timestamp_end, timestamp_start
-
         if address:
             conditions.append("(source = %s OR dest = %s)")
             params.extend([address, address])
@@ -150,10 +144,10 @@ class State:
             conditions.append("indexId <= %s")
             params.append(indexId_end)
         if timestamp_start is not None:
-            conditions.append("timestamp >= %s")
+            conditions.append(f"timestamp {">=" if sort_order == "ASC" else "<="} %s")
             params.append(timestamp_start)
         if timestamp_end is not None:
-            conditions.append("timestamp <= %s")
+            conditions.append(f"timestamp {"<=" if sort_order == "ASC" else ">="} %s")
             params.append(timestamp_end)
         if isContract is not None:
             conditions.append("isContract = %s")
